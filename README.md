@@ -125,11 +125,35 @@ DB_PASSWORD=your_freedb_password
 .\mvnw.cmd test
 ```
 
-### 4. Start the Application
+### 4. Start the Application Locally
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 Open **`http://localhost:8081`** in your browser. On first boot against an empty database, `DataSeeder` automatically creates initial categories, products, promo codes, and demo accounts.
+
+---
+
+## Cloud Deployment (Backend on Render + Frontend on Vercel)
+
+CartPulse is structured for clean **separated frontend/backend cloud hosting**:
+
+### Step 1: Deploy Java Backend on Render
+1. Create a **New Web Service** on [Render](https://render.com) connected to this GitHub repository.
+2. Select **Runtime: Docker** (uses the root `Dockerfile`) and **Free** plan.
+3. Add these **Environment Variables** in Render:
+   - `DB_HOST` = `sql.freedb.tech`
+   - `DB_PORT` = `3306`
+   - `DB_DATABASE` = `<your freedb database>`
+   - `DB_USERNAME` = `<your freedb username>`
+   - `DB_PASSWORD` = `<your freedb password>`
+   - `JWT_SECRET` = `<any 32+ character random secret>`
+   - `ALLOWED_ORIGINS` = `https://*.vercel.app,http://localhost:*`
+4. Wait for Render to build and note your live backend URL (e.g. `https://cartpulse-api.onrender.com`). Verify `/api/health` returns `{"status":"UP"}`.
+
+### Step 2: Deploy Frontend on Vercel
+1. Set `RENDER_API_URL` in `frontend/js/config.js` to your Render backend URL and push to GitHub.
+2. Import this GitHub repository into [Vercel](https://vercel.com).
+3. Set **Root Directory** to `frontend` and **Framework Preset** to `Other` (no build step required), then click **Deploy**.
 
 ---
 

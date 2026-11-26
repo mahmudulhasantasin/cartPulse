@@ -1,7 +1,12 @@
+import { API_BASE_URL } from './config.js';
+
 /**
  * Centralized REST API client for CartPulse Spring Boot backend.
- * Uses same-origin session cookies and standard JSON error parsing.
+ * Uses stateless Bearer JWT authentication so Vercel (Frontend) and Render (Backend)
+ * work across origins without third-party cookie restrictions.
  */
+const TOKEN_KEY = 'cartpulse_token';
+
 export class ApiError extends Error {
   constructor(status, message, fieldErrors = {}) {
     super(message);
@@ -10,14 +15,31 @@ export class ApiError extends Error {
   }
 }
 
+export function getAuthToken() {
+  return localStorage.getItem(TOKEN_KEY);
+}
+
+export function setAuthToken(token) {
+  if (token) {
+    localStorage.setItem(TOKEN_KEY, token);
+  } else {
+    localStorage.removeItem(TOKEN_KEY);
+  }
+}
+
 async function request(path, options = {}) {
+  const token = getAuthToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const config = {
-    credentials: 'same-origin',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(options.headers || {})
-    },
-    ...options
+    ...options,
+    headers
   };
 
   if (config.body && typeof config.body !== 'string') {
@@ -26,9 +48,9 @@ async function request(path, options = {}) {
 
   let response;
   try {
-    response = await fetch(path, config);
+    response = await fetch(`${API_BASE_URL}${path}`, config);
   } catch {
-    throw new ApiError(0, 'Unable to reach the server. Make sure the Spring Boot application is running.');
+    throw new ApiError(0, `Unable to reach backend API (${API_BASE_URL || window.location.origin}).`);
   }
 
   const text = await response.text();
@@ -42,6 +64,9 @@ async function request(path, options = {}) {
   }
 
   if (!response.ok) {
+    if (response.status === 401) {
+      setAuthToken(null);
+    }
     const message = data?.message || `Request failed (${response.status})`;
     const fieldErrors = data?.fieldErrors || {};
     throw new ApiError(response.status, message, fieldErrors);
@@ -52,10 +77,30 @@ async function request(path, options = {}) {
 
 export const CartPulseAPI = {
   auth: {
-    me: () => request('/api/auth/me'),
-    login: (payload) => request('/api/auth/login', { method: 'POST', body: payload }),
-    register: (payload) => request('/api/auth/register', { method: 'POST', body: payload }),
-    logout: () => request('/api/auth/logout', { method: 'POST' })
+    me: () => {
+      if (!getAuthToken()) {
+        return Promise.resolve({ authenticated: false, user: null });
+      }
+      return request('/api/auth/me');
+    },
+    login: async (payload) => {
+      const data = await request('/api/auth/login', { method: 'POST', body: payload });
+      if (data?.token) setAuthToken(data.token);
+      return data?.user || data;
+    },
+    register: async (payload) => {
+      const data = await request('/api/auth/register', { method: 'POST', body: payload });
+      if (data?.token) setAuthToken(data.token);
+      return data?.user || data;
+    },
+    logout: async () => {
+      setAuthToken(null);
+      try {
+        await request('/api/auth/logout', { method: 'POST' });
+      } catch {
+        // Stateless JWT logout completes client-side even if server is sleeping
+      }
+    }
   },
   catalog: {
     categories: () => request('/api/categories'),

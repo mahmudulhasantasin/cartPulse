@@ -10,6 +10,7 @@ import com.cartpulse.exception.ConflictException;
 import com.cartpulse.exception.ForbiddenActionException;
 import com.cartpulse.model.*;
 import com.cartpulse.repository.*;
+import com.cartpulse.security.JwtTokenProvider;
 import com.cartpulse.service.OrderService;
 import com.cartpulse.service.PromoService;
 import com.cartpulse.service.ReviewService;
@@ -170,6 +171,15 @@ class BusinessLogicTests {
         assertThrows(ForbiddenActionException.class, () ->
                 reviewService.createReview(10L, 1L, new CreateReviewRequest(5, "Great keyboard for daily coding!"))
         );
+    }
+
+    @Test
+    void jwtTokenProviderGeneratesAndVerifiesTokens() {
+        JwtTokenProvider provider = new JwtTokenProvider("test-jwt-secret-key-at-least-32-chars", 3600);
+        String token = provider.generateToken(42L, "tasin@university.edu", Role.CUSTOMER);
+
+        assertEquals("tasin@university.edu", provider.validateAndGetSubject(token));
+        assertNull(provider.validateAndGetSubject(token + "tamper"));
     }
 
     private static void setId(Object target, Long id) throws Exception {

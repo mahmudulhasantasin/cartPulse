@@ -46,4 +46,9 @@ public final class AuthDtos {
             return new UserResponse(u.getId(), u.getFullName(), u.getEmail(), u.getRole(), u.isActive());
         }
     }
+
+    public record AuthResponse(
+            String token,
+            UserResponse user
+    ) {}
 }

@@ -1,13 +1,12 @@
 package com.cartpulse.controller;
 
+import com.cartpulse.dto.AuthDtos.AuthResponse;
 import com.cartpulse.dto.AuthDtos.LoginRequest;
 import com.cartpulse.dto.AuthDtos.RegisterRequest;
 import com.cartpulse.dto.AuthDtos.UserResponse;
 import com.cartpulse.security.CustomUserDetails;
+import com.cartpulse.security.JwtTokenProvider;
 import com.cartpulse.service.AuthService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
@@ -29,46 +25,38 @@ public class AuthController {
 
     private final AuthService authService;
     private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthController(
             AuthService authService,
             AuthenticationManager authenticationManager,
-            SecurityContextRepository securityContextRepository
+            JwtTokenProvider jwtTokenProvider
     ) {
         this.authService = authService;
         this.authenticationManager = authenticationManager;
-        this.securityContextRepository = securityContextRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(
-            @Valid @RequestBody RegisterRequest request,
-            HttpServletRequest httpReq,
-            HttpServletResponse httpRes
-    ) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         UserResponse created = authService.register(request);
-        authenticateSession(request.email(), request.password(), httpReq, httpRes);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        String token = jwtTokenProvider.generateToken(created.id(), created.email(), created.role());
+        return ResponseEntity.status(HttpStatus.CREATED).body(new AuthResponse(token, created));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(
-            @Valid @RequestBody LoginRequest request,
-            HttpServletRequest httpReq,
-            HttpServletResponse httpRes
-    ) {
-        CustomUserDetails principal = authenticateSession(request.email(), request.password(), httpReq, httpRes);
-        return ResponseEntity.ok(UserResponse.from(principal.getUser()));
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.email().trim().toLowerCase(), request.password())
+        );
+        CustomUserDetails principal = (CustomUserDetails) auth.getPrincipal();
+        UserResponse user = UserResponse.from(principal.getUser());
+        String token = jwtTokenProvider.generateToken(user.id(), user.email(), user.role());
+        return ResponseEntity.ok(new AuthResponse(token, user));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-        SecurityContextHolder.clearContext();
+    public ResponseEntity<Map<String, String>> logout() {
         return ResponseEntity.ok(Map.of("message", "Signed out successfully."));
     }
 
@@ -83,21 +71,5 @@ public class AuthController {
             body.put("user", UserResponse.from(authService.getUserOrThrow(principal.getId())));
         }
         return ResponseEntity.ok(body);
-    }
-
-    private CustomUserDetails authenticateSession(
-            String email,
-            String password,
-            HttpServletRequest httpReq,
-            HttpServletResponse httpRes
-    ) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email.trim().toLowerCase(), password)
-        );
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(auth);
-        SecurityContextHolder.setContext(context);
-        securityContextRepository.saveContext(context, httpReq, httpRes);
-        return (CustomUserDetails) auth.getPrincipal();
     }
 }

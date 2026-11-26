@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -20,6 +21,11 @@ public class CatalogController {
     public CatalogController(ProductService productService, AdminService adminService) {
         this.productService = productService;
         this.adminService = adminService;
+    }
+
+    @GetMapping("/health")
+    public Map<String, String> health() {
+        return Map.of("status", "UP", "service", "CartPulse API");
     }
 
     @GetMapping("/categories")
