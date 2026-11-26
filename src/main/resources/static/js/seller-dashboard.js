@@ -373,8 +373,8 @@ function renderCharts() {
         {
           label: 'Revenue ($)',
           data: (analytics.dailyRevenue?.values || []).map(Number),
-          borderColor: '#4f46e5',
-          backgroundColor: 'rgba(79, 70, 229, 0.12)',
+          borderColor: '#111111',
+          backgroundColor: 'rgba(242, 226, 5, 0.35)',
           fill: true,
           tension: 0.35
         }
@@ -393,8 +393,8 @@ function renderCharts() {
         {
           data: hasCatData ? catEntries.map(([, v]) => Number(v)) : [1],
           backgroundColor: hasCatData
-            ? ['#4f46e5', '#059669', '#d97706', '#0284c7', '#7c3aed']
-            : ['#e2e8f0']
+            ? ['#f2e205', '#111111', '#059669', '#0369a1', '#d97706']
+            : ['#e4e4df']
         }
       ]
     },

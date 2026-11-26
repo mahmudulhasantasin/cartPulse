@@ -53,7 +53,7 @@ public class SecurityConfig {
             )
             .authorizeHttpRequests(auth -> auth
                 // Public frontend static pages and assets
-                .requestMatchers("/", "/*.html", "/css/**", "/js/**", "/favicon.ico").permitAll()
+                .requestMatchers("/", "/*.html", "/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
                 // Public catalog & auth endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories/**", "/api/products/**").permitAll()

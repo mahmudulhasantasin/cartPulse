@@ -209,8 +209,10 @@ function renderCharts() {
         {
           label: 'GMV ($)',
           data: (analytics.monthlyVolume?.values || []).map(Number),
-          backgroundColor: '#4f46e5',
-          borderRadius: 6
+          backgroundColor: '#f2e205',
+          borderColor: '#111111',
+          borderWidth: 1.5,
+          borderRadius: 2
         }
       ]
     },
@@ -228,8 +230,8 @@ function renderCharts() {
         {
           data: totalCount > 0 ? statusEntries.map(([, v]) => Number(v)) : [1],
           backgroundColor: totalCount > 0
-            ? ['#d97706', '#0284c7', '#4f46e5', '#7c3aed', '#059669', '#e11d48']
-            : ['#e2e8f0']
+            ? ['#f2e205', '#111111', '#0369a1', '#b45309', '#059669', '#e11d48']
+            : ['#e4e4df']
         }
       ]
     },

@@ -1,10 +1,10 @@
 package com.cartpulse.controller;
 
 import com.cartpulse.dto.AdminDtos.CategoryResponse;
+import com.cartpulse.dto.PageResponse;
 import com.cartpulse.dto.ProductDtos.ProductResponse;
 import com.cartpulse.service.AdminService;
 import com.cartpulse.service.ProductService;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -28,7 +28,7 @@ public class CatalogController {
     }
 
     @GetMapping("/products")
-    public Page<ProductResponse> getProducts(
+    public PageResponse<ProductResponse> getProducts(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) BigDecimal minPrice,
@@ -39,7 +39,9 @@ public class CatalogController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-        return productService.searchCatalog(q, categoryId, minPrice, maxPrice, minRating, inStockOnly, sort, page, size);
+        return PageResponse.from(
+                productService.searchCatalog(q, categoryId, minPrice, maxPrice, minRating, inStockOnly, sort, page, size)
+        );
     }
 
     @GetMapping("/products/{id}")

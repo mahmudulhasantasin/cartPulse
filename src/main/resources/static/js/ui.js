@@ -267,14 +267,7 @@ export const CartPulseUI = (() => {
       <header class="navbar">
         <div class="container navbar-inner">
           <a href="index.html" class="brand">
-            <span class="brand-mark">
-              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <path d="M16 10a4 4 0 0 1-8 0"/>
-              </svg>
-            </span>
-            <span>CartPulse</span>
+            <img src="images/cartpulse-logo.png" alt="CartPulse" class="brand-logo">
           </a>
 
           <form class="nav-search" id="global-search-form" role="search">
@@ -303,6 +296,20 @@ export const CartPulseUI = (() => {
           </button>
         </div>
       </header>
+      <div class="promo-ticker" aria-label="Storefront highlights">
+        <div class="promo-ticker-track">
+          <span>ATOMIC STOCK RESERVATION</span><span>&bull;</span>
+          <span>USE PROMO: WELCOME10 (10% OFF)</span><span>&bull;</span>
+          <span>// JAVA SPRING BOOT + MYSQL</span><span>&bull;</span>
+          <span>5-STEP ORDER TRACKING</span><span>&bull;</span>
+          <span>VERIFIED BUYER REVIEWS</span><span>&bull;</span>
+          <span>ATOMIC STOCK RESERVATION</span><span>&bull;</span>
+          <span>USE PROMO: WELCOME10 (10% OFF)</span><span>&bull;</span>
+          <span>// JAVA SPRING BOOT + MYSQL</span><span>&bull;</span>
+          <span>5-STEP ORDER TRACKING</span><span>&bull;</span>
+          <span>VERIFIED BUYER REVIEWS</span><span>&bull;</span>
+        </div>
+      </div>
       <div class="mobile-drawer" id="mobile-drawer">
         ${roleLinks.join('')}
         <a href="cart.html" class="nav-link">Cart <span class="cart-badge hidden" data-cart-badge>0</span></a>
