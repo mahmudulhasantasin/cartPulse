@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="auth-wrapper">
+    <div class="auth-card card">
+      <aside class="auth-aside">
+        <div>
+          <span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;margin-bottom:1rem;">Join CartPulse</span>
+          <h2 style="font-size:1.75rem;">Shop smart or sell with live analytics.</h2>
+          <p>Create a Customer account to shop with stock-safe checkout, or a Seller account to manage products and fulfillment.</p>
+        </div>
+        <div style="font-size:0.84rem;opacity:0.9;">
+          Multi-role RBAC powered by Java Spring Boot &amp; MySQL.
+        </div>
+      </aside>
+
+      <div class="auth-form-pane">
+        <h1 class="page-title" style="font-size:1.5rem;">Create Account</h1>
+        <p class="text-muted mb-2">All fields are validated before submission.</p>
+
+        <form id="register-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="reg-name">Full Name</label>
+            <input type="text" id="reg-name" class="form-control" placeholder="Tasin Ahmed" required>
+            <div class="invalid-feedback"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email Address</label>
+            <input type="email" id="reg-email" class="form-control" placeholder="tasin@university.edu" required>
+            <div class="invalid-feedback"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="reg-role">Account Type</label>
+            <select id="reg-role" class="form-control">
+              <option value="CUSTOMER">Customer — Browse, buy &amp; track orders</option>
+              <option value="SELLER">Seller — List products, manage stock &amp; analytics</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reg-password">Password</label>
+              <input type="password" id="reg-password" class="form-control" placeholder="Min 6 characters" required>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-confirm">Confirm Password</label>
+              <input type="password" id="reg-confirm" class="form-control" placeholder="Repeat password" required>
+              <div class="invalid-feedback"></div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="reg-submit-btn">Create Account</button>
+        </form>
+
+        <p class="mt-2 text-muted" style="font-size:0.88rem;margin-bottom:0;">
+          Already have an account? <a href="login.html" class="fw-600">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Operations Portal — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Seller Operations Portal</h1>
+          <p class="page-subtitle">Monitor store revenue, restock low inventory, and fulfill customer orders.</p>
+        </div>
+        <button type="button" class="btn btn-primary" id="open-product-modal-btn">+ Add Product</button>
+      </div>
+
+      <div class="dashboard-shell">
+        <aside class="card dash-sidebar">
+          <button type="button" class="dash-nav-item active" data-tab="overview">Overview &amp; Charts</button>
+          <button type="button" class="dash-nav-item" data-tab="products">Inventory &amp; Products</button>
+          <button type="button" class="dash-nav-item" data-tab="orders">Order Fulfillment</button>
+        </aside>
+
+        <div>
+          <!-- Overview Section -->
+          <section id="tab-overview">
+            <div class="kpi-grid">
+              <div class="card kpi-card">
+                <div class="kpi-label">Gross Revenue</div>
+                <div class="kpi-value tabular-nums" id="kpi-revenue">$4,820.50</div>
+                <div class="kpi-trend text-success">+14.2% vs last week</div>
+              </div>
+              <div class="card kpi-card">
+                <div class="kpi-label">Orders Fulfilled</div>
+                <div class="kpi-value tabular-nums" id="kpi-orders">38</div>
+                <div class="kpi-trend text-muted">4 awaiting shipment</div>
+              </div>
+              <div class="card kpi-card">
+                <div class="kpi-label">Active Products</div>
+                <div class="kpi-value tabular-nums" id="kpi-products">0</div>
+                <div class="kpi-trend text-muted">Catalog listings</div>
+              </div>
+              <div class="card kpi-card">
+                <div class="kpi-label">Low Stock Alerts</div>
+                <div class="kpi-value tabular-nums text-warning" id="kpi-lowstock">0</div>
+                <div class="kpi-trend text-danger">Needs restocking</div>
+              </div>
+            </div>
+
+            <div class="charts-grid">
+              <div class="card">
+                <div class="card-header"><h2 class="card-title">7-Day Revenue Trend</h2></div>
+                <div class="card-body"><div class="chart-box"><canvas id="seller-revenue-chart"></canvas></div></div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h2 class="card-title">Sales by Category</h2></div>
+                <div class="card-body"><div class="chart-box"><canvas id="seller-category-chart"></canvas></div></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Low-Stock Alert Queue</h2>
+                <span class="badge badge-warning">Threshold Watch</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Remaining</th>
+                      <th>Threshold</th>
+                      <th>Quick Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="low-stock-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Products Section -->
+          <section id="tab-products" class="hidden">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">My Products</h2>
+                <input type="search" id="seller-product-search" class="form-control" style="max-width:260px;" placeholder="Filter my products...">
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th>Price</th>
+                      <th>Stock</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="seller-products-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Orders Fulfillment Section -->
+          <section id="tab-orders" class="hidden">
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Order Fulfillment Queue</h2>
+                <span class="badge badge-primary">State Machine Enforced</span>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order #</th>
+                      <th>Customer</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                      <th>Advance Workflow</th>
+                    </tr>
+                  </thead>
+                  <tbody id="seller-orders-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add/Edit Product Modal -->
+  <div class="modal-backdrop" id="product-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+      <div class="modal-header">
+        <h3 id="product-modal-title" style="margin:0;">Add Product</h3>
+        <button type="button" class="btn btn-ghost btn-sm" id="close-product-modal">✕</button>
+      </div>
+      <form id="product-form" novalidate>
+        <div class="modal-body">
+          <input type="hidden" id="prod-id">
+          <div class="form-group">
+            <label class="form-label" for="prod-name">Product Name</label>
+            <input type="text" id="prod-name" class="form-control" placeholder="e.g. Logitech MX Master 3S">
+            <div class="invalid-feedback"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="prod-category">Category</label>
+              <select id="prod-category" class="form-control"></select>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prod-price">Price ($)</label>
+              <input type="number" id="prod-price" class="form-control" step="0.01" min="0.01" placeholder="49.99">
+              <div class="invalid-feedback"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="prod-stock">Stock Quantity</label>
+              <input type="number" id="prod-stock" class="form-control" min="0" placeholder="20">
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prod-threshold">Low-Stock Alert Threshold</label>
+              <input type="number" id="prod-threshold" class="form-control" min="1" value="5">
+              <div class="invalid-feedback"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prod-image">Image URL</label>
+            <input type="url" id="prod-image" class="form-control" placeholder="https://...">
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" for="prod-desc">Description</label>
+            <textarea id="prod-desc" class="form-control" rows="3" placeholder="Key specs, materials, warranty..."></textarea>
+            <div class="invalid-feedback"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancel-product-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="site-footer"></div>
+
+  <!-- Inventory Audit Log Modal -->
+  <div class="modal-backdrop" id="logs-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="logs-modal-title">
+      <div class="modal-header">
+        <h3 id="logs-modal-title" style="margin:0;">Inventory Audit Trail</h3>
+        <button type="button" class="btn btn-ghost btn-sm" id="close-logs-modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Reason</th>
+                <th>Change</th>
+                <th>Order Ref</th>
+              </tr>
+            </thead>
+            <tbody id="logs-modal-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/seller-dashboard.js"></script>
+</body>
+</html>

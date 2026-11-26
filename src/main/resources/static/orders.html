@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Order History &amp; Live Tracking</h1>
+          <p class="page-subtitle">Track fulfillment milestones or cancel eligible orders before shipment.</p>
+        </div>
+        <div class="flex-gap">
+          <select id="order-status-filter" class="form-control" style="width:auto;">
+            <option value="">All Statuses</option>
+            <option value="PENDING">Pending</option>
+            <option value="CONFIRMED">Confirmed</option>
+            <option value="PACKED">Packed</option>
+            <option value="SHIPPED">Shipped</option>
+            <option value="DELIVERED">Delivered</option>
+            <option value="CANCELLED">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="orders-list-host" style="display:flex;flex-direction:column;gap:1.15rem;"></div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/orders.js"></script>
+</body>
+</html>

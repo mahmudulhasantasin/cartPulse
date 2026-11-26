@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="mb-2">
+        <a href="index.html" class="text-muted fw-600">&larr; Back to Catalog</a>
+      </div>
+
+      <div id="product-detail-host"></div>
+
+      <section class="mt-2" style="margin-top:2.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Verified Customer Reviews</h2>
+            <span class="badge badge-info">Delivered Buyers Only</span>
+          </div>
+          <div class="card-body">
+            <div id="reviews-list" class="mb-2"></div>
+
+            <form id="review-form" novalidate style="border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1rem;">
+              <h3 style="font-size:1rem;">Write a Review</h3>
+              <p class="text-muted" style="font-size:0.85rem;">Only verified buyers whose order is marked <strong>DELIVERED</strong> can submit reviews in production.</p>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label" for="review-rating">Rating</label>
+                  <select id="review-rating" class="form-control" required>
+                    <option value="">Select rating...</option>
+                    <option value="5">5 Stars — Excellent</option>
+                    <option value="4">4 Stars — Very Good</option>
+                    <option value="3">3 Stars — Average</option>
+                    <option value="2">2 Stars — Fair</option>
+                    <option value="1">1 Star — Poor</option>
+                  </select>
+                  <div class="invalid-feedback"></div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="review-comment">Your Review</label>
+                <textarea id="review-comment" class="form-control" rows="3" placeholder="Share how this product performed..."></textarea>
+                <div class="invalid-feedback"></div>
+              </div>
+              <button type="submit" class="btn btn-primary">Submit Review</button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/product.js"></script>
+</body>
+</html>

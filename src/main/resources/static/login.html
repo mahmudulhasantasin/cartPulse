@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="auth-wrapper">
+    <div class="auth-card card">
+      <aside class="auth-aside">
+        <div>
+          <span class="badge" style="background:rgba(255,255,255,0.18);color:#fff;margin-bottom:1rem;">CartPulse Commerce</span>
+          <h2 style="font-size:1.75rem;">Welcome back.</h2>
+          <p>Sign in to manage your cart, track live deliveries, or run your seller analytics portal.</p>
+        </div>
+        <div style="font-size:0.84rem;opacity:0.9;">
+          Protected by Spring Security session authentication &amp; BCrypt password hashing (Phase 3).
+        </div>
+      </aside>
+
+      <div class="auth-form-pane">
+        <h1 class="page-title" style="font-size:1.5rem;">Sign In</h1>
+        <p class="text-muted mb-2">Enter your credentials or preview a role below.</p>
+
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email Address</label>
+            <input type="email" id="login-email" class="form-control" placeholder="you@university.edu" required>
+            <div class="invalid-feedback"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="Minimum 6 characters" required>
+            <div class="invalid-feedback"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="login-submit-btn">Sign In</button>
+        </form>
+
+        <div class="mt-2" style="padding-top:1rem;border-top:1px solid var(--border);">
+          <div class="text-muted fw-600 mb-1" style="font-size:0.8rem;">Seeded Demo Accounts (Spring Security Login):</div>
+          <div class="flex-gap">
+            <button type="button" class="btn btn-secondary btn-sm" data-demo-email="customer@cartpulse.dev" data-demo-pass="customer123">Customer</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-demo-email="seller@cartpulse.dev" data-demo-pass="seller123">Seller</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-demo-email="admin@cartpulse.dev" data-demo-pass="admin123">Admin</button>
+          </div>
+        </div>
+
+        <p class="mt-2 text-muted" style="font-size:0.88rem;margin-bottom:0;">
+          New to CartPulse? <a href="register.html" class="fw-600">Create an account</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

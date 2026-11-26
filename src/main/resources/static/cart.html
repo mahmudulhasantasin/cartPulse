@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart &amp; Checkout — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Shopping Cart &amp; Checkout</h1>
+          <p class="page-subtitle">Multi-vendor items automatically split into per-seller orders at checkout.</p>
+        </div>
+        <a href="index.html" class="btn btn-secondary">Continue Shopping</a>
+      </div>
+
+      <div id="cart-layout" class="cart-layout">
+        <!-- Cart Items -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Cart Items</h2>
+            <button type="button" class="btn btn-ghost btn-sm text-danger" id="clear-cart-btn">Clear Cart</button>
+          </div>
+          <div class="card-body" id="cart-items-host"></div>
+        </div>
+
+        <!-- Promo & Checkout Summary -->
+        <aside class="card card-body">
+          <h2 class="card-title mb-2">Order Summary</h2>
+
+          <form id="promo-form" class="mb-2" novalidate>
+            <label class="form-label" for="promo-input">Promo Code (try WELCOME10 or SAVE15)</label>
+            <div class="flex-gap">
+              <input type="text" id="promo-input" class="form-control" placeholder="Enter promo code" style="flex:1;">
+              <button type="submit" class="btn btn-secondary">Apply</button>
+            </div>
+            <div class="invalid-feedback" id="promo-feedback"></div>
+          </form>
+
+          <div id="promo-applied-badge" class="alert alert-success hidden"></div>
+
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summary-subtotal" class="tabular-nums fw-600">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Discount</span>
+            <span id="summary-discount" class="tabular-nums text-success fw-600">-$0.00</span>
+          </div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="summary-total" class="tabular-nums">$0.00</span>
+          </div>
+
+          <form id="checkout-form" class="mt-2" novalidate style="border-top:1px solid var(--border);padding-top:1rem;">
+            <div class="form-group">
+              <label class="form-label" for="shipping-address">Shipping Address</label>
+              <textarea id="shipping-address" class="form-control" rows="2" placeholder="Street, apartment, city, postal code"></textarea>
+              <div class="invalid-feedback"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="payment-method">Payment Method</label>
+              <select id="payment-method" class="form-control">
+                <option value="CARD_SIMULATED">Credit / Debit Card (Simulated)</option>
+                <option value="COD">Cash on Delivery</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="place-order-btn">
+              Place Order
+            </button>
+          </form>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/cart.js"></script>
+</body>
+</html>

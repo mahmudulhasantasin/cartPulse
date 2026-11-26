@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Control Panel — CartPulse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div id="preview-banner" class="preview-banner"></div>
+  <div id="site-navbar"></div>
+
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Platform Admin Control Panel</h1>
+          <p class="page-subtitle">Manage categories, platform users, promo codes, and marketplace health.</p>
+        </div>
+      </div>
+
+      <div class="dashboard-shell">
+        <aside class="card dash-sidebar">
+          <button type="button" class="dash-nav-item active" data-admin-tab="analytics">Platform Analytics</button>
+          <button type="button" class="dash-nav-item" data-admin-tab="promos">Promo Code Engine</button>
+          <button type="button" class="dash-nav-item" data-admin-tab="categories">Categories</button>
+          <button type="button" class="dash-nav-item" data-admin-tab="users">Users &amp; Sellers</button>
+        </aside>
+
+        <div>
+          <!-- Analytics -->
+          <section id="admin-tab-analytics">
+            <div class="kpi-grid">
+              <div class="card kpi-card">
+                <div class="kpi-label">Platform GMV</div>
+                <div class="kpi-value tabular-nums">$18,940</div>
+                <div class="kpi-trend text-success">Across 3 active sellers</div>
+              </div>
+              <div class="card kpi-card">
+                <div class="kpi-label">Total Orders</div>
+                <div class="kpi-value tabular-nums">142</div>
+                <div class="kpi-trend text-muted">96.4% fulfillment rate</div>
+              </div>
+              <div class="card kpi-card">
+                <div class="kpi-label">Active Promos</div>
+                <div class="kpi-value tabular-nums" id="admin-kpi-promos">2</div>
+                <div class="kpi-trend text-muted">Rule engine active</div>
+              </div>
+              <div class="card kpi-card">
+                <div class="kpi-label">Registered Users</div>
+                <div class="kpi-value tabular-nums" id="admin-kpi-users">4</div>
+                <div class="kpi-trend text-muted">Customers &amp; Sellers</div>
+              </div>
+            </div>
+
+            <div class="charts-grid">
+              <div class="card">
+                <div class="card-header"><h2 class="card-title">Monthly Marketplace Volume</h2></div>
+                <div class="card-body"><div class="chart-box"><canvas id="admin-volume-chart"></canvas></div></div>
+              </div>
+              <div class="card">
+                <div class="card-header"><h2 class="card-title">Orders by Status</h2></div>
+                <div class="card-body"><div class="chart-box"><canvas id="admin-status-chart"></canvas></div></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Promos -->
+          <section id="admin-tab-promos" class="hidden">
+            <div class="card mb-2">
+              <div class="card-header"><h2 class="card-title">Create Promo Code</h2></div>
+              <div class="card-body">
+                <form id="admin-promo-form" class="form-row" novalidate>
+                  <div class="form-group">
+                    <label class="form-label" for="promo-code">Code</label>
+                    <input type="text" id="promo-code" class="form-control" placeholder="CAMPUS20">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="promo-type">Discount Type</label>
+                    <select id="promo-type" class="form-control">
+                      <option value="PERCENT">Percentage (%)</option>
+                      <option value="FIXED">Fixed Amount ($)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="promo-value">Value</label>
+                    <input type="number" id="promo-value" class="form-control" min="1" placeholder="20">
+                    <div class="invalid-feedback"></div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="promo-min">Min Order ($)</label>
+                    <input type="number" id="promo-min" class="form-control" min="0" value="25">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="promo-max-uses">Max Uses</label>
+                    <input type="number" id="promo-max-uses" class="form-control" min="1" value="100">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="promo-expiry">Expires At</label>
+                    <input type="date" id="promo-expiry" class="form-control" value="2027-06-30">
+                  </div>
+                  <div style="grid-column:1 / -1;">
+                    <button type="submit" class="btn btn-primary">Create Promo Code</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header"><h2 class="card-title">Active &amp; Past Promo Codes</h2></div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Code</th>
+                      <th>Rule</th>
+                      <th>Min Spend</th>
+                      <th>Usage</th>
+                      <th>Expires</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-promos-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Categories -->
+          <section id="admin-tab-categories" class="hidden">
+            <div class="card">
+              <div class="card-header"><h2 class="card-title">Manage Categories</h2></div>
+              <div class="card-body">
+                <form id="admin-category-form" class="flex-gap mb-2" novalidate>
+                  <input type="text" id="new-cat-name" class="form-control" style="max-width:300px;" placeholder="New category name">
+                  <button type="submit" class="btn btn-primary">Add Category</button>
+                </form>
+                <div class="table-wrap">
+                  <table class="data-table">
+                    <thead>
+                      <tr><th>ID</th><th>Name</th><th>Slug</th></tr>
+                    </thead>
+                    <tbody id="admin-categories-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Users -->
+          <section id="admin-tab-users" class="hidden">
+            <div class="card">
+              <div class="card-header"><h2 class="card-title">User &amp; Seller Accounts</h2></div>
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Role</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-users-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="site-footer"></div>
+  <script type="module" src="js/admin-dashboard.js"></script>
+</body>
+</html>
